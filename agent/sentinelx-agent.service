@@ -1,0 +1,21 @@
+# Linux (systemd). Install: sudo cp sentinelx-agent.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable --now sentinelx-agent
+[Unit]
+Description=SentinelX endpoint agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# Dedicated low-privilege user that may read auth logs / the journal but nothing else:
+#   sudo useradd --system --no-create-home --shell /usr/sbin/nologin sentinelx-agent
+User=sentinelx-agent
+SupplementaryGroups=adm systemd-journal
+ExecStart=/usr/bin/python3 /opt/sentinelx-agent/sentinelx_agent.py --config /etc/sentinelx-agent/agent.json
+Restart=always
+RestartSec=10
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/sentinelx-agent
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+**/node_modules
+**/__pycache__
+**/.venv
+.git
+.env
+*.db
+frontend/dist
+backend/data
+DEMO-LOGINS.txt
+backend/.env

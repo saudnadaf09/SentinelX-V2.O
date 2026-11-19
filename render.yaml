@@ -1,0 +1,18 @@
+# Render Blueprint: one free web service built from the root Dockerfile.
+# Free instances sleep when idle and have an EPHEMERAL disk: users/data reset on redeploy/restart.
+# The admin is re-created from BOOTSTRAP_ADMIN_PASSWORD and demo data is re-loaded each time.
+services:
+  - type: web
+    name: sentinelx
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: BOOTSTRAP_ADMIN_EMAIL
+        value: saudnadaf.infosec@proton.me
+      - key: BOOTSTRAP_ADMIN_PASSWORD
+        sync: false          # you type this in the Render dashboard; never commit it
+      - key: LOAD_DEMO_DATA
+        value: "true"

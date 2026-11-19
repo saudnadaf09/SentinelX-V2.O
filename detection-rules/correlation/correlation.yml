@@ -1,0 +1,11 @@
+# Correlation settings used by the platform (see backend/app/domain/correlation.py).
+# Alerts from DIFFERENT rules are related only if they share the listed entities
+# within the window. A public IP alone never correlates alerts.
+window_seconds: 600
+rules:
+  - id: SX-CORR-001
+    name: Same host and user
+    require: [host, user]
+  - id: SX-CORR-002
+    name: Same non-public source IP
+    require: [source_ip]

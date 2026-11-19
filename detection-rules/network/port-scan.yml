@@ -1,0 +1,25 @@
+id: SX-NET-002
+title: Port scan behaviour
+description: One source contacted 15 or more distinct destination ports within 60 seconds.
+version: 1
+enabled: true
+severity: medium
+type: threshold
+tags: [discovery, network]
+mitre:
+  - technique_id: T1046
+match:
+  all:
+    - {field: event.category, op: eq, value: network}
+    - {field: event.type, op: eq, value: connection}
+threshold:
+  count: 15
+  window_seconds: 60
+  distinct: destination.port
+group_by: [source.ip]
+false_positives:
+  - Authorized vulnerability scanners or network inventory tools.
+next_checks:
+  - Confirm whether a scheduled scan was running.
+  - Check whether any scanned port accepted connections.
+references: [https://attack.mitre.org/techniques/T1046/]

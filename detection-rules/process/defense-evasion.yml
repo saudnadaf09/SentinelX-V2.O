@@ -1,0 +1,26 @@
+id: SX-EVAS-001
+title: Security control stopped or logging cleared
+description: Commands that stop security services, disable real-time protection or clear event logs.
+version: 1
+enabled: true
+severity: high
+type: match
+tags: [defense-evasion]
+mitre:
+  - technique_id: T1562.001
+match:
+  all:
+    - {field: event.action, op: eq, value: process_creation}
+    - any:
+        - all:
+            - {field: process.command_line, op: contains_any, value: ["sc stop", "sc.exe stop", "stop-service", "net stop"]}
+            - {field: process.command_line, op: contains_any, value: [windefend, wdnissvc, sysmon, eventlog, mpssvc, wscsvc]}
+        - {field: process.command_line, op: contains_any, value: [disablerealtimemonitoring, "wevtutil cl", "wevtutil.exe cl", clear-eventlog, "auditpol /clear"]}
+group_by: [host.name, user.name]
+dedupe_window_seconds: 300
+false_positives:
+  - Planned maintenance windows for security tooling.
+next_checks:
+  - Confirm whether security tooling was restarted afterwards.
+  - Review all activity on the host after this event.
+references: [https://attack.mitre.org/techniques/T1562/001/]

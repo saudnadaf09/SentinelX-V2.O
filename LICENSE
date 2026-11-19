@@ -1,0 +1,50 @@
+SENTINELX PROPRIETARY LICENSE - ALL RIGHTS RESERVED
+
+Copyright (c) 2026 Saud Nadaf (saudnadaf.infosec@proton.me). All rights reserved.
+
+SentinelX (the "Software": all source code, detection rules, documentation, designs, text,
+sample data and the user interface) is the original work of Saud Nadaf (the "Owner").
+The Software is NOT open source. No license is granted except as stated below.
+
+1. LIMITED PERMISSION. The Owner permits you to VIEW the Software, and to run it on a
+   personal computer, solely to evaluate the Owner's skills (for example, by a recruiter,
+   interviewer, teacher or examiner). This permission is personal, non-transferable and
+   revocable at any time.
+
+2. PROHIBITED WITHOUT PRIOR WRITTEN PERMISSION OF THE OWNER. You may not:
+   a. copy, fork, clone for reuse, republish or redistribute the Software or any part of it;
+   b. modify the Software or create derivative works based on it;
+   c. host, deploy or offer the Software or any part of it to others, publicly or privately,
+      including as a service, product, course material or portfolio of anyone but the Owner;
+   d. sell, sublicense, rent, lease or otherwise commercialise the Software;
+   e. remove or alter any copyright, author, license or attribution notice;
+   f. present the Software or any part of it as your own work, including in applications,
+      assignments, projects, repositories or interviews;
+   g. use the Software, its code, rules or documentation to train, fine-tune or evaluate
+      machine-learning models, or include it in datasets;
+   h. reverse engineer, decompile or extract the Software except where this restriction is
+      prohibited by applicable law;
+   i. use the Software to monitor, test or attack any system you are not explicitly
+      authorized to monitor, test or attack.
+
+3. THIRD-PARTY COMPONENTS. The Software depends on open-source packages (for example FastAPI,
+   React, SQLAlchemy). Those packages remain under their own licenses; this license covers
+   only the Owner's original work. MITRE ATT&CK(R) is a registered trademark of The MITRE
+   Corporation; technique names are used for reference.
+
+4. OWNERSHIP. All rights, title and interest in the Software remain with the Owner.
+   Nothing here transfers any ownership or grants any right by implication or estoppel.
+
+5. NO WARRANTY. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. It is a
+   lab and educational project and is not a substitute for a commercial security product.
+   To the maximum extent permitted by law, the Owner is not liable for any claim or damages
+   arising from its use.
+
+6. TERMINATION AND REMEDIES. This permission ends automatically if you breach any term.
+   Unauthorized use may infringe the Owner's copyright and may result in legal action,
+   takedown requests (for example under the DMCA or equivalent laws) and claims for damages.
+
+7. GOVERNING LAW. This license is governed by the laws of India.
+
+To request permission for any use not allowed above, contact: saudnadaf.infosec@proton.me
+LinkedIn: https://www.linkedin.com/in/saud-nadaf-41b015343/   GitHub: https://github.com/saudnadaf09

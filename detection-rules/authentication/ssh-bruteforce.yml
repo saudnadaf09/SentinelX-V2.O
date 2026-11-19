@@ -1,0 +1,26 @@
+id: SX-AUTH-001
+title: Repeated SSH authentication failures
+description: Five or more failed SSH logins from one source IP within five minutes.
+version: 1
+enabled: true
+severity: medium
+type: threshold
+tags: [authentication, brute-force]
+mitre:
+  - technique_id: T1110.001
+match:
+  all:
+    - {field: event.dataset, op: eq, value: linux.auth}
+    - {field: event.action, op: eq, value: ssh_login_failed}
+threshold:
+  count: 5
+  window_seconds: 300
+group_by: [source.ip]
+false_positives:
+  - A user or script with a stale saved password retrying repeatedly.
+  - Vulnerability scanners or monitoring checks run from the lab.
+next_checks:
+  - Check whether the same source IP later authenticated successfully.
+  - Review the usernames targeted; many distinct names suggests password spraying.
+  - Confirm the source IP belongs to an authorized lab system.
+references: [https://attack.mitre.org/techniques/T1110/001/]

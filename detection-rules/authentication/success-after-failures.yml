@@ -1,0 +1,32 @@
+id: SX-AUTH-003
+title: Successful login after a burst of failures
+description: A successful authentication for the same account and source shortly after five or more failures.
+version: 1
+enabled: true
+severity: high
+type: sequence
+tags: [authentication, credential-access]
+mitre:
+  - technique_id: T1110
+  - technique_id: T1078
+window_seconds: 600
+group_by: [user.name, source.ip]
+sequence:
+  - name: failures
+    count: 5
+    match:
+      all:
+        - {field: event.category, op: eq, value: authentication}
+        - {field: event.outcome, op: eq, value: failure}
+  - name: success
+    match:
+      all:
+        - {field: event.category, op: eq, value: authentication}
+        - {field: event.outcome, op: eq, value: success}
+false_positives:
+  - A legitimate user who forgot their password and then recalled it.
+next_checks:
+  - Confirm with the account owner whether they logged in from this source.
+  - Review everything this account did after the successful login.
+  - Consider resetting the account's credentials in the lab.
+references: [https://attack.mitre.org/techniques/T1078/]

@@ -1,0 +1,103 @@
+# SentinelX local lab stack. Only the web proxy (and optionally the API on localhost) is published.
+name: sentinelx
+
+x-backend-env: &backend-env
+  APP_ENV: ${APP_ENV:-development}
+  SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in .env (see .env.example)}
+  DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-sentinelx}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@postgres:5432/${POSTGRES_DB:-sentinelx}
+  REDIS_URL: redis://redis:6379/0
+  OPENSEARCH_URL: http://opensearch:9200
+  QUEUE_BACKEND: redis
+  STORE_BACKEND: opensearch
+  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+  EVENT_RETENTION_DAYS: ${EVENT_RETENTION_DAYS:-14}
+  COLLECTOR_KEY_TTL_DAYS: ${COLLECTOR_KEY_TTL_DAYS:-90}
+  BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-admin@sentinelx.local}
+  BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:-}
+  AI_PROVIDER: ${AI_PROVIDER:-disabled}
+  AI_API_KEY: ${AI_API_KEY:-}
+  AI_MODEL: ${AI_MODEL:-claude-sonnet-5-5}
+  AI_BASE_URL: ${AI_BASE_URL:-}
+  RESPONSE_ADAPTER: mock
+  RULES_DIR: /app/detection-rules
+
+services:
+  postgres:
+    image: postgres:16.4-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sentinelx}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-sentinelx}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sentinelx} -d ${POSTGRES_DB:-sentinelx}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [redisdata:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  opensearch:
+    image: opensearchproject/opensearch:2.17.1
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"        # lab only: the service is not published to the host
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+      bootstrap.memory_lock: "false"
+    ulimits:
+      nofile: {soft: 65536, hard: 65536}
+    volumes: [osdata:/usr/share/opensearch/data]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
+    restart: unless-stopped
+
+  backend:
+    build: {context: ., dockerfile: backend/Dockerfile}
+    environment: *backend-env
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      opensearch: {condition: service_healthy}
+    ports: ["127.0.0.1:8000:8000"]   # optional direct API access, localhost only
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/api/v1/health',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    restart: unless-stopped
+
+  worker:
+    build: {context: ., dockerfile: backend/Dockerfile}
+    command: ["python", "-m", "app.workers.run"]
+    environment: *backend-env
+    depends_on:
+      backend: {condition: service_healthy}
+    restart: unless-stopped
+
+  web:
+    build: {context: ., dockerfile: frontend/Dockerfile}
+    ports: ["${WEB_PORT:-8080}:80"]
+    depends_on:
+      backend: {condition: service_healthy}
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:
+  osdata:

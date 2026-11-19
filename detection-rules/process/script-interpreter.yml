@@ -1,0 +1,22 @@
+id: SX-EXEC-002
+title: Unusual script interpreter executed
+description: wscript, cscript or mshta started on an endpoint where scripting hosts are not expected.
+version: 1
+enabled: true
+severity: medium
+type: match
+tags: [execution]
+mitre:
+  - technique_id: T1059
+match:
+  all:
+    - {field: event.action, op: eq, value: process_creation}
+    - {field: process.name, op: in, value: [wscript.exe, cscript.exe, mshta.exe]}
+group_by: [host.name, user.name]
+dedupe_window_seconds: 300
+false_positives:
+  - Legacy logon scripts or administrative VBScript/JScript.
+next_checks:
+  - Review the script path and its creation time and origin.
+  - Check the parent process (Office, browser, or a shell).
+references: [https://attack.mitre.org/techniques/T1059/]

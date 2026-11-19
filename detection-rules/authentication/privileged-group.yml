@@ -1,0 +1,22 @@
+id: SX-PRIV-002
+title: Account added to a privileged group
+description: A member was added to Administrators, Domain Admins, sudo, wheel or a similar group.
+version: 1
+enabled: true
+severity: high
+type: match
+tags: [privilege-escalation, iam]
+mitre:
+  - technique_id: T1098
+match:
+  all:
+    - {field: event.action, op: eq, value: group_member_added}
+    - {field: group.name, op: in, value: [administrators, domain admins, enterprise admins, sudo, wheel, admin, root]}
+group_by: [host.name]
+dedupe_window_seconds: 600
+false_positives:
+  - Approved administrator onboarding.
+next_checks:
+  - Verify the change was authorized and who performed it.
+  - Review recent activity of the added account.
+references: [https://attack.mitre.org/techniques/T1098/]

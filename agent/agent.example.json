@@ -1,0 +1,6 @@
+{
+  "server_url": "https://your-sentinelx-host",
+  "api_key": "sxk_xxxxxxxx_paste-the-key-shown-once-in-the-Endpoints-page",
+  "interval_seconds": 30,
+  "max_events_per_cycle": 500
+}

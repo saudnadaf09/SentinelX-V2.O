@@ -1,0 +1,54 @@
+SENTINELX - SABSE ASAAN TARIKA (Docker ki zaroorat nahi)
+=========================================================
+
+Aapko sirf 2 free programs install karne hain (ek baar):
+
+ 1) Python  -> https://www.python.org/downloads/
+    Installer kholte hi NEECHE "Add python.exe to PATH" wale box par TICK zaroor lagayein, phir Install.
+
+ 2) Node.js -> https://nodejs.org/   (jo "LTS" likha ho wo download karein, Next-Next karke install)
+
+Install ke baad:
+
+ A) ZIP ko extract karein. Folder "sentinelx" banega.
+ B) Us folder ke andar "run.bat" par DOUBLE-CLICK karein.
+    (Linux/Mac: terminal mein ./run.sh)
+ C) Ek kaali window khulegi aur kaam karegi. Pehli baar 5-10 minute lagte hain
+    (internet se packages download + website build). Window band mat karna.
+ D) Kaam hone par browser apne aap khulega: http://localhost:8000
+ E) Login ke liye folder mein DEMO-LOGINS.txt file khol lein. Usme admin ka email aur password likha hai.
+
+Pehli baar me demo attack data apne aap load ho jata hai, to Alerts, Incidents,
+Events, Dashboard sab bhara hua dikhega.
+
+Dobara chalana ho to bas phir se run.bat par double-click. Ab 5-10 second me start ho jayega.
+Band karna ho to kaali window mein Ctrl+C dabayein ya window close kar dein.
+
+Sab kuch reset (naye sire se) karna ho to ye 2 cheezein delete karein:
+   backend\data   (folder)     aur     backend\.env   (file)     aur    DEMO-LOGINS.txt
+Phir run.bat dobara chalayein.
+
+VS Code se kholna ho: File > Open Folder > sentinelx. Terminal (Ctrl+`) mein  .\run.bat  likhein.
+
+Koi error aaye to kaali window ka poora red text copy karke bhej dein.
+
+Docker wala bada version bhi folder me hai (SETUP.md), uski zaroorat sirf tab hai jab
+aap OpenSearch/PostgreSQL ke saath production-jaisa chalana chahein.
+
+
+---------------------------------------------------------------
+UPDATE (v2.0) - aapke purane project ko upgrade karne ke steps
+---------------------------------------------------------------
+1) Chalte server ko Ctrl+C se band karein.
+2) Naye ZIP ki saari files purane folder mein paste karein ("Replace files").
+   backend\data, backend\.env aur DEMO-LOGINS.txt delete mat karna (wo aapka purana data hai; naye ZIP mein ye files nahi hain).
+3) run.bat chalayein. Ye apne aap:
+   - backend\data ka BACKUP "backups\pre-upgrade-<time>" mein bana dega,
+   - nayi dependencies install karega (cryptography),
+   - website dobara build karega,
+   - database ko migrate karega (purana data bacha rahega; purane demo alerts "SIMULATED" ban jayenge).
+4) Login: pehle jaisa hi (admin@sentinelx.local + DEMO-LOGINS.txt wala password). Ab ye "super admin" hai.
+5) Nayi cheezein: Login page par "Create an account" (registration). Email verification / password reset ke links
+   console mode mein email nahi jaate: server wali kaali window mein ya backend\data\outbox\ folder mein file ban jati hai.
+   Real email chahiye to backend\.env mein MAIL_MODE=smtp aur SMTP_HOST/SMTP_USER/SMTP_PASSWORD set karein.
+6) AI chalu karne ke liye: login karke left menu "AI Provider" > provider, model aur API key daalein > "Test connection".

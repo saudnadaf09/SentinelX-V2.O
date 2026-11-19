@@ -1,0 +1,27 @@
+id: SX-NET-001
+title: Script host making outbound connection on an unusual port
+description: PowerShell or a script host connected out on a port other than 80, 443 or 53.
+version: 1
+enabled: true
+severity: medium
+type: match
+tags: [command-and-control, network]
+mitre:
+  - technique_id: T1571
+  - technique_id: T1071
+match:
+  all:
+    - {field: event.action, op: eq, value: network_connection}
+    - {field: network.direction, op: eq, value: egress}
+    - {field: process.name, op: in, value: [powershell.exe, pwsh.exe, mshta.exe, wscript.exe, cscript.exe, rundll32.exe, regsvr32.exe]}
+    - {field: destination.port, op: not_in, value: [80, 443, 53]}
+    - {field: destination.ip, op: exists}
+group_by: [host.name, destination.ip]
+dedupe_window_seconds: 300
+false_positives:
+  - Admin tooling talking to internal management ports.
+  - Rarity alone is not malicious; combine with other alerts on the same host.
+next_checks:
+  - Check whether the destination is a known lab or approved system.
+  - Review the process command line that opened the connection.
+references: [https://attack.mitre.org/techniques/T1571/]
