@@ -1,5 +1,5 @@
 # Single-container build for hosting (Render etc.): builds the React UI, then serves UI + API from one process.
-FROM node:24-alpine AS web
+FROM node:24-slim AS web
 WORKDIR /web
 COPY frontend/package.json frontend/package-lock.json* ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
