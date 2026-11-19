@@ -50,6 +50,7 @@ class Settings(BaseSettings):
     require_email_verification: bool = False   # set true when real SMTP is configured
     frontend_base_url: str = "http://localhost:8000"
     mail_mode: str = "console"                 # console (no real email) | smtp
+    brevo_api_key: str = ""
     mail_from: str = "SentinelX <saudnadaf854325@gmail.com>"
     smtp_host: str = "smtp-relay.brevo.com"
     smtp_port: int = 587

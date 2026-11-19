@@ -42,11 +42,20 @@ def consume_token(db: Session, raw: str, purpose: str) -> AuthToken:
 
 def mail(to: str, subject: str, body: str) -> dict:
     s = get_settings()
-    return send_mail(mode=s.mail_mode, to=to, subject=subject, body=body, sender=s.mail_from, 
-                     outbox_dir=s.outbox_dir,
-                     smtp_host=s.smtp_host, smtp_port=s.smtp_port, smtp_user=s.smtp_user,
-                     smtp_password=s.smtp_password, smtp_starttls=s.smtp_starttls)
-
+    return send_mail(
+        mode="brevo" if s.brevo_api_key else s.mail_mode,
+        to=to,
+        subject=subject,
+        body=body,
+        sender=s.mail_from,
+        outbox_dir=s.outbox_dir,
+        brevo_api_key=s.brevo_api_key,
+        smtp_host=s.smtp_host,
+        smtp_port=s.smtp_port,
+        smtp_user=s.smtp_user,
+        smtp_password=s.smtp_password,
+        smtp_starttls=s.smtp_starttls,
+    )
 
 def _link(path: str, token: str) -> str:
     return f"{get_settings().frontend_base_url.rstrip('/')}{path}?token={token}"
